@@ -1,7 +1,10 @@
+#define version "version 0.3"
+
 #define WIFI_SSID "xxxxxxxxxxxx"
 #define WIFI_PASS "xxxxxxxxxxxx"
 #define BOT_TOKEN "xxxxxxxxxx:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 #define CHAT_ID "xxxxxxxxx"
+
 
 #include <FastBot.h>
 
@@ -10,6 +13,7 @@ FastBot bot(BOT_TOKEN);
 
 bool butt_flag = 0;
 bool butt;
+bool led_flag = 0;
 bool led_flag = 0;
 unsigned long last_press;
 
@@ -20,7 +24,8 @@ void setup() {
 
   pinMode(4, INPUT);
   pinMode(2, OUTPUT);
-
+  pinMode(16, OUTPUT);
+  digitalWrite(16, true);
   connectWiFi();
 
   // можно сменить размер буфера на (приём, отправку), по умолч. 512, 512
@@ -35,7 +40,7 @@ void setup() {
 
   // отправить сообщение в указанный в setChatID
   bot.sendMessage("Hello, World!");
-  bot.sendMessage("version 0.2");
+  bot.sendMessage(version);
 
   startUnix = bot.getUnix(); 
 }
@@ -84,6 +89,14 @@ butt = digitalRead(4); // считать текущее положение кн�
   }
 
 
+  if(WiFi.status() != WL_CONNECTED){             /led conect
+    digitalWrite(16,HIGH);
+  }
+  else{
+    digitalWrite(16,LOW);
+  }
+
+
 
  bot.tick();   // тикаем в луп
 }
@@ -97,7 +110,8 @@ void connectWiFi() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     //Serial.print(".");
-    if (millis() > 15000) ESP.restart();
+    if (millis() > 15000){
+      ESP.restart();}
   }
-  //Serial.println("Connected");
+    //Serial.println("Connected");
 }
